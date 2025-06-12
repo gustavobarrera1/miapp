@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios - Practica1 DevOps</title>
+    <!-- Tailwind CSS CDN para estilos rápidos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Fondo gris claro */
+        }
+        .container {
+            max-width: 800px;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
+        }
+        .btn-primary {
+            background-color: #3b82f6; /* Azul-500 */
+            color: #ffffff;
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.75rem 1.5rem;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb; /* Azul-600 */
+        }
+        .btn-danger {
+            background-color: #ef4444; /* Rojo-500 */
+            color: #ffffff;
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.5rem 1rem;
+            transition: background-color 0.2s;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626; /* Rojo-600 */
+        }
+        input[type="text"], input[type="email"] {
+            border-width: 1px;
+            border-color: #d1d5db; /* Gris-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.75rem 1rem;
+            width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input[type="text"]:focus, input[type="email"]:focus {
+            outline: none;
+            border-color: #3b82f6; /* Azul-500 */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* ring-blue-500 */
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="container mx-auto p-6 card">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8 rounded-lg p-2 bg-gradient-to-r from-green-400 to-teal-500 text-white shadow-md">
+            Gestión de Usuarios
+        </h1>
+
+        <!-- Formulario para añadir nuevos usuarios -->
+        <form action="/add_user" method="POST" class="flex flex-col sm:flex-row gap-4 mb-8">
+            <input type="text" name="name" placeholder="Nombre del usuario..." required
+                   class="flex-grow border-gray-300 focus:ring-green-500 focus:border-green-500">
+            <input type="email" name="email" placeholder="Email del usuario..." required
+                   class="flex-grow border-gray-300 focus:ring-green-500 focus:border-green-500">
+            <button type="submit" class="btn-primary flex-shrink-0 bg-green-500 hover:bg-green-600">
+                Añadir Usuario
+            </button>
+        </form>
+
+        <!-- Lista de usuarios -->
+        {% if users %}
+            <ul class="space-y-4">
+                {% for user in users %}
+                    <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
+                        <div>
+                            <span class="text-lg font-semibold text-gray-800">{{ user.name }}</span>
+                            <span class="text-sm text-gray-600 block">{{ user.email }}</span>
+                        </div>
+                        <form action="/delete_user/{{ user.id }}" method="POST">
+                            <button type="submit" class="btn-danger">
+                                Eliminar
+                            </button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-center text-gray-500 text-xl mt-12 mb-8">No hay usuarios registrados. ¡Añade algunos!</p>
+            <div class="text-center">
+                [Image of a user icon]
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
