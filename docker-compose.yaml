@@ -5,7 +5,7 @@ services:
     ports:
       - "5000:5000" 
     volumes:
-      - ./user_data:/app/instance
+      - /user_data:/app/instance
     restart: always 
 
 volumes:
