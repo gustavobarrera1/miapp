@@ -5,7 +5,6 @@ pipeline {
         DOCKER_IMAGE = 'gustavobarrera/miapp-web'
         DOCKER_TAG = "v${sh(script: 'git rev-list --count HEAD', returnStdout: true).trim()}" // Agrega secuencialidad x cada commit
         DOCKER_CREDENTIALS_ID = 'dockerhub_id' // Jenkins credentials ID
-        COMPOSE_FILE = 'docker-compose.yaml'
     }
 
     stages {
@@ -27,7 +26,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    docker compose -f ${COMPOSE_FILE} up -d --force-recreate
+                    docker compose up -d --force-recreate
                     """
                 }
             }
