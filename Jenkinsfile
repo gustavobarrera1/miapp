@@ -34,19 +34,24 @@ pipeline {
             }
         }
 
-        stage('Verificar puerto del contenedor') {
+        stage('Verificar estado del contenedor') {
             steps {
                 script {
-                    def puerto = sh(script: "docker inspect -f '{{.NetworkSettings.Ports}}' ${CONTAINER_NAME} | cut -c5-8", returnStdout: true).trim()
+                    def estadoContenedor = sh(
+                        script: """"
+                            if docker inspect -f '{{.State.Paused}}' ${COMPOSE_FILE} | grep true || \
+                               docker inspect -f '{{.State.Restarting}}' ${COMPOSE_FILE} | grep true || \
+                               docker inspect -f '{{.State.Dead}}' ${COMPOSE_FILE} | grep true; then
+                               exit 1
+                            fi
+                        """"",
+                        returnStatus: true
+                    )
 
-                    def estado = sh(script: "ss -tuln | grep ':$puerto ' | cut -c7-12 | tail -n 1", returnStdout: true).trim()
-
-                    echo "Estado del puerto: $estado"
-
-                    if (estado != "LISTEN") {
-                        error("Revisión de puerto, fallida. Deteniendo el pipeline.")
+                    if (estadoContenedor != 0) {
+                        error("El contenedor '${COMPOSE_FILE}' está en un estado roto (Paused, Restarting o Dead).")
                     } else {
-                        echo "Revisión de puerto, correcta. Continuando el pipeline."
+                        echo "El contenedor está en buen estado."
                     }
                 }
             }
