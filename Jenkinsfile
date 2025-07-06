@@ -39,9 +39,9 @@ pipeline {
                 script {
                     def estadoContenedor = sh(
                         script: """
-                            if docker inspect -f '{{.State.Paused}}' ${COMPOSE_FILE} | grep true || \
-                               docker inspect -f '{{.State.Restarting}}' ${COMPOSE_FILE} | grep true || \
-                               docker inspect -f '{{.State.Dead}}' ${COMPOSE_FILE} | grep true; then
+                            if docker inspect -f '{{.State.Paused}}' ${CONTAINER_NAME} | grep true || \
+                               docker inspect -f '{{.State.Restarting}}' ${CONTAINER_NAME} | grep true || \
+                               docker inspect -f '{{.State.Dead}}' ${CONTAINER_NAME} | grep true; then
                                exit 1
                             fi
                         """,
