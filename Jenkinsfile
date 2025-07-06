@@ -6,6 +6,7 @@ pipeline {
         DOCKER_TAG = "v${sh(script: 'git rev-list --count HEAD', returnStdout: true).trim()}" // Agrega secuencialidad x cada commit
         DOCKER_CREDENTIALS_ID = 'dockerhub_id' // Jenkins credentials ID
         COMPOSE_FILE = 'docker-compose.yaml'
+        CONTAINER_NAME = 'miapp-test'
     }
 
     stages {
@@ -32,6 +33,25 @@ pipeline {
                 }
             }
         }
+
+        stage('Verificar puerto del contenedor') {
+            steps {
+                script {
+                    def puerto = sh(script: "docker inspect -f '{{.NetworkSettings.Ports}}' ${CONTAINER_NAME} | cut -c5-8", returnStdout: true).trim()
+
+                    def estado = sh(script: "ss -tuln | grep ':$puerto ' | cut -c7-12 | tail -n 1", returnStdout: true).trim()
+
+                    echo "Estado del puerto: $estado"
+
+                    if (estado != "LISTEN") {
+                        error("Revisión de puerto, fallida. Deteniendo el pipeline.")
+                    } else {
+                        echo "Revisión de puerto, correcta. Continuando el pipeline."
+                    }
+                }
+            }
+        }
+        
 
         stage('Login en Docker Hub') {
             steps {
