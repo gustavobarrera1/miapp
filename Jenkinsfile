@@ -38,13 +38,13 @@ pipeline {
             steps {
                 script {
                     def estadoContenedor = sh(
-                        script: """"
+                        script: """
                             if docker inspect -f '{{.State.Paused}}' ${COMPOSE_FILE} | grep true || \
                                docker inspect -f '{{.State.Restarting}}' ${COMPOSE_FILE} | grep true || \
                                docker inspect -f '{{.State.Dead}}' ${COMPOSE_FILE} | grep true; then
                                exit 1
                             fi
-                        """"",
+                        """,
                         returnStatus: true
                     )
 
