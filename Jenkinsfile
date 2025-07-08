@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'gustavobarrera/miapp-web'
-        DOCKER_TAG = "v${sh(script: 'git rev-list --count HEAD', returnStdout: true).trim()}" // Agrega secuencialidad x cada commit
-        DOCKER_CREDENTIALS_ID = 'dockerhub_id' // Jenkins credentials ID
+        DOCKER_TAG = "v${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}" // Agrega secuencialidad x cada commit
+        DOCKER_CREDENTIALS_ID = 'dockerhub_id' // 
         COMPOSE_FILE = 'docker-compose.yaml'
         CONTAINER_NAME = 'miapp-test'
     }
@@ -37,26 +37,26 @@ pipeline {
         stage('Verificar estado del contenedor') {
             steps {
                 script {
-                    def estadoContenedor = sh(
-                        script: """
-                            if docker inspect -f '{{.State.Paused}}' ${CONTAINER_NAME} | grep true || \
-                               docker inspect -f '{{.State.Restarting}}' ${CONTAINER_NAME} | grep true || \
-                               docker inspect -f '{{.State.Dead}}' ${CONTAINER_NAME} | grep true; then
-                               exit 1
-                            fi
-                        """,
-                        returnStatus: true
-                    )
+                    def estado = sh(
+                        script: "docker inspect -f '{{.State.Status}}' ${CONTAINER_NAME}",
+                        returnStdout: true
+                    ).trim()
 
-                    if (estadoContenedor != 0) {
-                        error("El contenedor '${COMPOSE_FILE}' está en un estado roto (Paused, Restarting o Dead).")
+                    def pausado = sh(script: "docker inspect -f '{{.State.Paused}}' ${CONTAINER_NAME}", returnStdout: true).trim()
+                    def reiniciando = sh(script: "docker inspect -f '{{.State.Restarting}}' ${CONTAINER_NAME}", returnStdout: true).trim()
+                    def muerto = sh(script: "docker inspect -f '{{.State.Dead}}' ${CONTAINER_NAME}", returnStdout: true).trim()
+
+                    if (pausado == "true" || reiniciando == "true" || muerto == "true") {
+                        error("El contenedor '${CONTAINER_NAME}' está fallando (Paused, Restarting o Dead).")
+                    } else if (estado != "running") {
+                        error("El contenedor '${CONTAINER_NAME}' no está en estado 'running'. Estado actual: '${estado}'.")
                     } else {
-                        echo "El contenedor está en buen estado."
+                        echo "El contenedor está en buen estado y en ejecución (running)."
                     }
                 }
             }
         }
-        
+                
 
         stage('Login en Docker Hub') {
             steps {
