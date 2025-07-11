@@ -42,6 +42,7 @@ Practica Bootcamp DevOps
     <sub>chmod 660 /var/run/docker.sock</sub>
 
     <sub>docker restart jenkinsv1</sub>
+    
+# Documento de configuración del servidor Jenkins para la ejecución del pipeline.
 
-  
-  
+https://docs.google.com/document/d/1iQVxnoG54x1BYiXkob31yWrPGQTlKr4O4yhW5Bw6iII/edit?usp=sharing
