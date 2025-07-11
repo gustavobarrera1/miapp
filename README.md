@@ -2,7 +2,7 @@ Practica Bootcamp DevOps
 # Ejecucion mediante dockerfile
 * Creacion de imagen del contenedor:
 
-<sub>docker build . -t gustavobarrera/flaskapp:v1</sub>
+    <sub>docker build . -t gustavobarrera/flaskapp:v1</sub>
   
 * Ejecución del contenedor previamente creado:
   
