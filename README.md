@@ -6,8 +6,8 @@ Practica Bootcamp DevOps
   
 * Ejecución del contenedor previamente creado:
   
-docker run --name miapp-test -p 5000:5000 -v $(pwd)/user_data:/app/instance -d gustavobarrera/flaskapp
-:v1
+    <sub>docker run --name miapp-test -p 5000:5000 -v $(pwd)/user_data:/app/instance -d gustavobarrera/flaskapp
+:v1</sub>
 
 # Ejecucion mediante docker compose
 * Una vez clonado el repositorio, dentro de la carpeta de trabajo ejecutamos:
