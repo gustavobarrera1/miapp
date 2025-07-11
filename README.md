@@ -12,36 +12,36 @@ Practica Bootcamp DevOps
 # Ejecucion mediante docker compose
 * Una vez clonado el repositorio, dentro de la carpeta de trabajo ejecutamos:
 
-docker compose -f docker-compose.yaml up -d
+<sub>docker compose -f docker-compose.yaml up -d</sub>
 
 # Pasos de instalacion del servidor de Jenkins para la ejecucion de un pipeline
 * Instalacion del servidor y permisos para poder utilizar docker en el host
 
-docker run -p 8080:8080 -p 50000:50000 -d --name jenkinsv1 -v /var/run/docker.sock:/var/run/docker.sock -v jenkins_home:/var/jenkins_home --restart=always jenkins/jenkins:alpine
+<sub>docker run -p 8080:8080 -p 50000:50000 -d --name jenkinsv1 -v /var/run/docker.sock:/var/run/docker.sock -v jenkins_home:/var/jenkins_home --restart=always jenkins/jenkins:alpine</sub>
 
 * Conectarse al contenedor con usuario root
 
-docker exec -it --user root jenkinsv1 sh
+<sub>docker exec -it --user root jenkinsv1 sh</sub>
 
 * Instalar Docker en Jenkins
 
-apk update apk add docker-cli
+<sub>apk update apk add docker-cli</sub>
 
 * Validar grupo Docker
 
-ls -l /var/run/docker.sock
+<sub>ls -l /var/run/docker.sock</sub>
 
 * Crear grupo Docker y agregar usuario Jenkins al grupo Docker
 
-addgroup docker
+<sub>addgroup docker</sub>
 
-addgroup jenkins docker
+<sub>addgroup jenkins docker</sub>
 
-chgrp docker /var/run/docker.sock
+<sub>chgrp docker /var/run/docker.sock</sub>
 
-chmod 660 /var/run/docker.sock
+<sub>chmod 660 /var/run/docker.sock</sub>
 
-docker restart jenkinsv1
+<sub>docker restart jenkinsv1</sub>
 
   
   
